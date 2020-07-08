@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Football</title>
+        <meta name="description" content="DEFAULT FMIPA UNJ"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="stylesheet" href="/css/custom.css">
+        <link rel="stylesheet" href="/css/materialize.min.css" />
+        <link rel="apple-touch-icon" href="/icon.png" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+        <link rel="shortcut icon" href="/icon.png" />
+    </head>
+    <body>
+        <header>
+            <!-- Navigasi -->
+          <nav class="mynav" role="navigation">
+            <div class="nav-wrapper container">
+              <a href="./index.html" class="brand-logo" id="logo-container">Football</a>
+              <a href="./index.html" class="sidenav-trigger" data-target="nav-mobile">
+                <i class="material-icons">arrow_back</i>
+              </a>
+              <ul class="topnav right hide-on-med-and-down"></ul>
+              <ul class="sidenav" id="nav-mobile"></ul>
+            </div>
+          </nav>
+    <!-- Akhir Navigasi -->
+        </header>
+          <div class="container" id="body-content"></div>
+          <div class="container center">
+            <div class="preloader-wrapper big active">
+                <div class="spinner-layer spinner-blue">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div><div class="gap-patch">
+                        <div class="circle"></div>
+                    </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+          <div class="fixed-action-btn">
+            <a class="btn-floating btn-large red" id="save">
+            <i class="large material-icons">save</i>
+            </a>
+          </div>
+          <div class="fixed-action-btn">
+            <a class="btn-floating btn-large black" id="delete">
+            <i class="large material-icons">delete</i>
+            </a>
+          </div>
+        <footer class="page-footer">
+          <div class="row">
+            <div class="container">
+              <div class="col m6 s12">
+                <h5 class="bold white-text">Foot<strong>ball</strong></h5>
+                <p class="grey-text text-lighten-2">
+                  <i>Photo by <a href="https://unsplash.com/@namakuki?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Tevarak Phanduang</a> on <a href="https://unsplash.com/?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></i>
+              </p>
+              </div>
+              <div class="col m6 s12">
+                <p class="grey-text text-lighten-2"><div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div></p>
+                <p class="grey-text text-lighten-2">Data Source  : <a href="https://www.football-data.org">https://www.football-data.org</a></p>
+              </div>
+            </div>
+          </div>
+          <div class="footer-copyright center white-text">
+             <div class="container">
+              <p>© All Rights Reserved. 2020</p>
+             </div>
+            </div>
+          </div>
+        </footer>
+        <script src="js/materialize.min.js"></script>
+        <script src="js/idb.js"></script>
+        <script src="js/db.js"></script>
+        <script src="js/api.js"></script>
+        <script>
+          // REGISTER SERVICE WORKER
+          if ("serviceWorker" in navigator) {
+              window.addEventListener("load", function() {
+                  navigator.serviceWorker
+                      .register("/service-worker.js")
+                      .then(function() {
+                      console.log("Pendaftaran ServiceWorker berhasil");
+                  })
+                      .catch(function() {
+                      console.log("Pendaftaran ServiceWorker gagal");
+                  });
+              });
+          } else {
+              console.log("ServiceWorker belum didukung browser ini.");
+          }
+
+          document.addEventListener("DOMContentLoaded", function() {
+         let urlParams = new URLSearchParams(window.location.search);
+          let teamId = urlParams.get("id");
+
+          let btnSave = document.getElementById("save");
+
+          let btnDel = document.getElementById("delete");
+
+          check(teamId)
+          .then((msg)=> {
+            btnSave.style.display = 'none';
+            btnDel.style.display = 'true';
+          })
+          .catch(msg)((msg) => {
+            btnDel.style.display = 'none';
+          })
+          
+          btnSave.onclick = function() {
+            console.log("Tombol fav di klik.");
+            item.then(function (team) {
+              saveForLater(team);
+                    });
+                };
+
+            btnDel.onclick = function() {
+            console.log("Tombol hapus di klik.");
+            deleteFav(teamId);
+                };
+          });
+
+        
+          function askFavorite() {
+            const title = 'Team added successfully to Favorite!';
+            const options = {
+                'body': 'Do you want to see Favorite Team?', 'badge': '/images/icon-512x512.png',
+                'icon': '/images/question.png',
+                'actions': [
+                    {
+                        'action': 'yes-action',
+                        'title': 'Yes',
+                    },
+                    {
+                        'action': 'no-action',
+                        'title': 'No',
+                    },
+                  
+                    ]
+                };
+                if (Notification.permission === 'granted') {
+                    navigator.serviceWorker.ready.then(function(registration) {
+                        registration.showNotification(title, options);
+                    });
+                } else {
+                    console.error('Fitur notifikasi tidak diijinkan.');
+                }
+            }
+      </script>
+    </body>
+</html>
